@@ -95,7 +95,16 @@ namespace SP_Witsml_v2._0.Controllers
                 cSelected.IndexValues.Add(arr.ElementAt(0).ElementAt(0).ToString());
                 foreach (var c in cSelected.Data)
                 {
-                    c.DataValues.Add(arr.ElementAt(1).ElementAt(c.Index).ToString());
+                    if (arr.ElementAt(1).ElementAt(c.Index).ToString().Equals("0"))
+                    {
+                        c.DataValues.Add(c.LastDataValue);
+                        continue;
+                    }
+                    else
+                    {
+                        c.LastDataValue = arr.ElementAt(1).ElementAt(c.Index).ToString();
+                        c.DataValues.Add(arr.ElementAt(1).ElementAt(c.Index).ToString());
+                    }
                 }
             }
 

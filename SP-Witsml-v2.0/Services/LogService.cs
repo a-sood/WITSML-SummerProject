@@ -20,7 +20,8 @@ namespace SP_Witsml_v2._0.Services
 
         public LogService(Log lg, string nm)
         {
-            log = this.QC(lg);
+            log = lg;
+            //log = this.QC(lg);
             stream = new MemoryStream();
             name = nm;
             IFormatter formatter = new BinaryFormatter();
