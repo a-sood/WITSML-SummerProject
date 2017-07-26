@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "UploadFile";
+}
+
+<h3>Upload File</h3>
+
+@using (Html.BeginForm("UploadFile", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="file" />
+    <br />
+    <input type="submit" class="btn btn-default" value="Upload"/> 
+    if (ViewBag.Message == "File Uploaded Successfully")
+    {
+        <span style="color:green">@ViewBag.Message</span>
+    }
+    else
+    {
+        <span style="color:red">@ViewBag.Message</span>
+    }
+}
+

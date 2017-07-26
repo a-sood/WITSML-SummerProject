@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Plot";
+}
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script>
+        function testcheck() {
+            checked = $("input[type=checkbox]:checked").length;
+
+            if (checked) {
+                return true;
+            }
+            else {
+                alert("At least one chart must be selected");
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h2>Select the options below to create the desired charts</h2>
+        <form method="post" id="plotForm">
+            <hr />
+            <h3>Index Type</h3>
+            @for (int i = 0; i < ViewBag.IndexType.Length; i++)
+            {
+
+                <label class="radio-inline" checked>
+                    @if (i == 0)
+                {
+                        <input type="radio" name="optradio" checked="checked" value="@ViewBag.IndexType[i]">@ViewBag.IndexType[i]
+                    }
+                    else
+                    {
+                        <input type="radio" name="optradio" value="@ViewBag.IndexType[i]">@ViewBag.IndexType[i]
+                    }
+                </label>
+            }
+
+            <hr />
+            <h3>Channels</h3>
+            @foreach (var x in ViewBag.Channels)
+            {
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="@x" id="@x">@x
+                </label>
+            }
+
+            <hr />
+            <div>
+                <input type="submit" class="btn btn-default" value="Submit" onclick="return testcheck()" />
+            </div>
+        </form>
+        @{TempData["id"] = ViewBag.Id;}
+        @ViewBag.Message
+    </div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+﻿@model SP_Witsml_v2._0.Models.SelectedChannel
+
+@{
+    ViewBag.Title = "Line Chart";
+}
+@{
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = Int32.MaxValue;
+    var jsonModel = serializer.Serialize(Model);
+}
+<h2>File Name: @ViewBag.FileName</h2>
+@*
+        var upperObject = @(Html.Raw(Json.Encode(Model)));
+            var d = new Date(JSON.stringify(object.IndexValues[0]));
+            var e = d.getTime() / 1000.0;
+            values.push([e, parseFloat(object.DataValues[i])]);
+    *@
+<html>
+<head>
+    <script src="https://cdn.zingchart.com/zingchart.min.js">
+        
+</script>
+
+</head>
+
+<body>
+    <div id="chartDiv"></div>
+    <script>
+        var selCh = @(Html.Raw(jsonModel));
+
+        var colors = [];
+        colors.push("#FE0303");
+        colors.push("#37FE03");
+        colors.push("#8D4F02");
+        colors.push("#028D56");
+        colors.push("#23028D");
+        colors.push("#8D0259");
+        colors.push("#024D8D");
+        colors.push("#8D021F");
+        colors.push("#8D8302");
+        colors.push("#581845");
+        colors.push("#900C3F");
+        colors.push("#FF5733");
+        colors.push("#DAF7A6");
+        colors.push("#1E241E");
+
+        var graphset = [];
+        var k = 0;
+        for (var i = 0; i < selCh.Data.length; i++)
+        {
+            var values = [];
+            for (var j = 0; j < selCh.IndexValues.length; j++)
+            {
+                var date = new Date(JSON.stringify(selCh.IndexValues[j]));
+                var epoch = date.getTime();
+                values.push([epoch, parseFloat(selCh.Data[i].DataValues[j])]);
+            }
+
+            if (k == 14)
+            {
+                k = 0;
+            }
+
+            if (i == 0)
+            {
+                graphset.push
+                    ({
+                        type: "vline",
+                        title:
+                        {
+                            text: selCh.Data[i].Description,
+                            adjustLayout: "true",
+                            wrapText: "true",
+                            offsetY: 20,
+                            fontSize: 20 - selCh.Data.length,
+                            color: "#000",
+                            borderRadius: "4px",
+                            fontWeight: "none"
+                        },
+                        plot:
+                        {
+                            lineColor: colors[k],
+                            marker:
+                            {
+                                backgroundColor: colors[k]
+                            }
+                        }, 		
+
+                        scaleX:
+                        {
+                            transform:
+                            {
+                                type: "date",
+                            },
+                            mirrored: "true",
+                            zooming: "true"
+                        },
+                        scaleY:
+                        {
+                            placement: "opposite",
+                            zooming: "true"
+                        },
+                        scrollX:
+                        {
+
+                        },
+                        scrollY:
+                        {
+
+                        },
+                        plotarea:
+                        {
+                            marginLeft: 'dynamic',
+                            marginRight: 'dynamic'
+                        },
+                        series:
+                        [
+                            { values: values }
+                        ]
+                    });
+            }
+            else
+            {
+                graphset.push
+                    ({
+                        type: "vline",
+                        title:
+                        {
+                            text: selCh.Data[i].Description,
+                            adjustLayout: "true",
+                            wrapText: "true",
+                            offsetY: 20,
+                            fontSize: 20 - selCh.Data.length,
+                            color: "#000",
+                            borderRadius: "4px",
+                            fontWeight: "none"
+                        },
+                        plot:
+                        {
+                            lineColor: colors[k],
+                            marker:
+                            {
+                                backgroundColor: colors[k]
+                            }
+                        },
+                        scaleX:
+                        {
+                            transform:
+                            {
+                                type: "date",
+                            },
+                            visible: "false",
+                            mirrored: "true",
+                            zooming: "true"
+                        },
+                        scaleY:
+                        {
+                            placement: "opposite",
+                            zooming: "true"
+                        },
+                        scrollX:
+                        {
+
+                        },
+                        scrollY:
+                        {
+
+                        },
+                        plotarea:
+                        {
+                            marginLeft: 'dynamic',
+                            marginRight: 'dynamic'
+                        },
+                        series:
+                        [
+                            { values: values }
+                        ]
+                    });
+            }
+            k++;
+        }
+        var chartData =
+            {
+                layout: "horizontal",
+                graphset: graphset
+
+            };
+
+        zingchart.render({
+            id: "chartDiv",
+            data: chartData,
+            height: 600,
+            width: '100%'
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+@* !!!!Google Charts Visualization!!!!!
+    <html>
+        <head>
+            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script type="text/javascript">
+                var upperObject = @(Html.Raw(Json.Encode(Model)));
+                google.charts.load('current', { 'packages': ['line'] });
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart()
+                {
+                    for (var l = 0; l < upperObject.length; l++)
+                    {
+                        var object = upperObject[l];
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('datetime', 'Date');
+                        data.addColumn('number', object.Description);
+
+                        for (var i = 0; i < object.IndexValues.length; i++)
+                        {
+                            data.addRow([new Date(JSON.stringify(object.IndexValues[i])), parseFloat(object.DataValues[i])]);
+                        }
+                        var options =
+                        {
+                            chart: {},
+                            height: 600,
+                            legend: { position: 'none' },
+                            orientation: 'vertical',
+                            title: object.Description,
+                            axes:
+                            {
+                                x:
+                                {
+                                    0: { side: 'top' }
+                                }
+                            }
+                        };
+                        var chart = new google.charts.Line(document.getElementById('line_top_x-' + l.toString()));
+                        chart.draw(data, google.charts.Line.convertOptions(options));
+                   }
+                }
+            </script>
+        </head>
+        <body>
+            <div class="row">
+                <div class="col-md-4" id="line_top_x-0"></div>
+                <div class="col-md-4" id="line_top_x-1"></div>
+                <div class="col-md-4" id="line_top_x-2"></div>
+            </div>
+        </body>
+    </html>
+*@
+
